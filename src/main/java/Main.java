@@ -1,9 +1,7 @@
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 
 /**
  * Created by Seanwu on 2016/10/17.
@@ -14,24 +12,40 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        ServerSocket socket = new ServerSocket(8099);
-
+        WebConfig context = Context.CONFIG.getContext();
+        String listen = context.getValue(WebConfig.LISTEN);
+        ServerSocket socket = new ServerSocket(Integer.valueOf(listen));
         int i = 0;
-        i++;
-        Socket accept = socket.accept();
-        InputStream is = accept.getInputStream();
-        OutputStream os = accept.getOutputStream();
-        String requestString = convertStreamToString(is);
-        System.out.println(requestString);
-        String s = HTTP1 + HTTP_STATUS_CODE_200 + new HttpHeader().setKey("Content-Type").setValue("text/html")
-                + "Hello , the " + i + "st request\r\n";
+        while (true) {
+            i++;
+            Socket accept = socket.accept();
+            InputStream is = accept.getInputStream();
+            OutputStream os = accept.getOutputStream();
+            String requestString = convertStreamToString(is);
+            System.out.println("request is :\n" + requestString);
 
-        System.out.println("return :\n" + s);
+            if (requestString.equals("q")) {
+                break;
+            }
 
-        os.write(s.getBytes());
-        is.close();
-        os.close();
+            File indexFile = new File(context.getValue(WebConfig.DOCUMENT_ROOT) + context.getValue(WebConfig.INDEX_FILE));
+            String resultBody = "";
+            if (!indexFile.exists()) {
+                resultBody = "404!! indexFile not exists!!";
+            }else{
 
+                FileInputStream fs = new FileInputStream(indexFile);
+                resultBody = convertStreamToString(fs);
+            }
+
+            String s = HTTP1 + HTTP_STATUS_CODE_200 + new HttpHeader().setKey("Content-Type").setValue("text/html")
+                    + resultBody;
+
+            System.out.println("return :\n" + s);
+            os.write(s.getBytes());
+            is.close();
+            os.close();
+        }
     }
 
     private static final int EOF = -1;
@@ -48,9 +62,8 @@ public class Main {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int length;
-        while (((is.available() > 0)) &&(length = is.read(buffer)) != EOF) {
+        while (((is.available() > 0)) && (length = is.read(buffer)) != EOF) {
             result.write(buffer, 0, length);
-            System.out.println(result.toString());
         }
         return result.toString("UTF-8");
     }
