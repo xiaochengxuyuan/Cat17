@@ -25,6 +25,6 @@ public class HttpHeader {
 
     @Override
     public String toString() {
-        return  key + " : " + value + "\r\n\r\n";
+        return  key + ": " + value + "\r\n\r\n";
     }
 }
