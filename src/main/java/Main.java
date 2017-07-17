@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
 
 /**
  * Created by Seanwu on 2016/10/17.
@@ -38,11 +37,6 @@ public class Main {
                 resultBody = convertStreamToString(fs);
             }
 
-            String s = HTTP1 + HTTP_STATUS_CODE_200 + new HttpHeader().setKey("Content-Type").setValue("text/html")
-                    + resultBody;
-
-            System.out.println("return :\n" + s);
-            os.write(s.getBytes());
             is.close();
             os.close();
         }
