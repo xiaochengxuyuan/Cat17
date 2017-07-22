@@ -1,11 +1,13 @@
+package pers.xisha.smallcat.handler;
+
 import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.*;
+import pers.xisha.smallcat.handler.get.HttpGetHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -34,28 +36,18 @@ public class HttpChannelHandler<C extends Channel> extends ChannelInitializer<C>
                 if (msg instanceof FullHttpRequest) {
                     FullHttpRequest request = (FullHttpRequest) msg;
                     String responseMessage = "Hello World";
-                    HttpHeaders headers = request.headers();
-                    ByteBuf content = request.content();
-                    System.out.println(content.toString(StandardCharsets.UTF_8));
                     String uri = request.uri();
-                    System.out.println("http uri: " + uri);
+
                     //去除浏览器"/favicon.ico"的干扰
                     if(uri.equals("/favicon.ico")){
                         return;
                     }
                     HttpMethod method = request.method();
-                    if(method.equals(HttpMethod.GET)){
-                        QueryStringDecoder queryString = new QueryStringDecoder(uri);
-                        Map<String, List<String>> parameters = queryString.parameters();
-                        System.out.println(JSON.toJSONString(parameters));
 
-                    }else if(method.equals(HttpMethod.POST)){
+                    StringBuilder info = new StringBuilder("http uri:").append(uri).append(" method: ").append(method.name());
+                    System.out.println(info);
 
-                    }else{
-
-                    }
-
-
+                    // 这里应该想办法根据 uri 和 method 去找实现类
 
 
                     DefaultFullHttpResponse response = new DefaultFullHttpResponse(

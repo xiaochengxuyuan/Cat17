@@ -3,6 +3,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import pers.xisha.smallcat.handler.HttpChannelHandler;
 
 public class SmallHttpServer {
 
