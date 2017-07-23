@@ -1,17 +1,10 @@
 package pers.xisha.smallcat.handler;
 
-import com.alibaba.fastjson.JSON;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.http.*;
-import pers.xisha.smallcat.handler.get.HttpGetHandler;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
@@ -35,7 +28,6 @@ public class HttpChannelHandler<C extends Channel> extends ChannelInitializer<C>
             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                 if (msg instanceof FullHttpRequest) {
                     FullHttpRequest request = (FullHttpRequest) msg;
-                    String responseMessage = "Hello World";
                     String uri = request.uri();
 
                     //去除浏览器"/favicon.ico"的干扰
@@ -47,8 +39,9 @@ public class HttpChannelHandler<C extends Channel> extends ChannelInitializer<C>
                     StringBuilder info = new StringBuilder("http uri:").append(uri).append(" method: ").append(method.name());
                     System.out.println(info);
 
-                    // 这里应该想办法根据 uri 和 method 去找实现类
-
+                    // 这里应该想办法根据 uri 和 method 去找实现类 TODO
+                    HttpRequestHandler handlerByMethod = HttpHandlerFactory.createHandlerByMethod(method);
+                    String responseMessage = handlerByMethod.handle(request);
 
                     DefaultFullHttpResponse response = new DefaultFullHttpResponse(
                             HttpVersion.HTTP_1_1,

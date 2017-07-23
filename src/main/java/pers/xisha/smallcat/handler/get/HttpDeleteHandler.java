@@ -7,7 +7,7 @@ import pers.xisha.smallcat.handler.HttpRequestHandler;
 /**
  * Created by SeanWu on 2017/7/22.
  */
-public class HttpGetHandler implements HttpRequestHandler {
+public class HttpDeleteHandler implements HttpRequestHandler {
 
     @Override
     public String handle(FullHttpRequest request) {

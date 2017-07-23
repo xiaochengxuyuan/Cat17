@@ -10,11 +10,12 @@ import java.util.Map;
 /**
  * Created by SeanWu on 2017/7/22.
  */
-public interface HttpRequstHandler {
-    default void handle(FullHttpRequest request){
+public interface HttpRequestHandler {
+    default String handle(FullHttpRequest request){
         String uri = request.uri();
         QueryStringDecoder queryString = new QueryStringDecoder(uri);
         Map<String, List<String>> parameters = queryString.parameters();
         System.out.println(JSON.toJSONString(parameters));
+        return "{}";
     }
 }
